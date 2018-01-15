@@ -69,7 +69,27 @@ function get_Y(y) {
 
 function mnk(x, y) {
     let xt = math.transpose(x);
-    let t = math.multiply(math.multiply(math.inv(math.multiply(xt, x)), xt),y);
+    let d = document.getElementById('temp');
+    d.innerHTML = 'Xt:<br>';
+    for(let i = 0; i < xt._data.length; i++) {
+        d.innerHTML += xt._data[i]+ '<br>';
+    }
+    let xtx = math.multiply(xt, x);
+    d.innerHTML += '<br>Xt*X:<br>';
+    for(let i = 0; i < xtx._data.length; i++) {
+        d.innerHTML += xtx._data[i]+ '<br>';
+    }
+    let xtxi = math.inv(xtx);
+    d.innerHTML += '<br>(Xt*X)^-1:<br>';
+    for(let i = 0; i < xtxi._data.length; i++) {
+        d.innerHTML += xtxi._data[i]+ '<br>';
+    }
+    let xtxixt = math.multiply(xtxi, xt);
+    d.innerHTML += '<br>((Xt*X)^-1)*Xt:<br>';
+    for(let i = 0; i < xtxixt._data.length; i++) {
+        d.innerHTML += xtxixt._data[i]+ '<br>';
+    }
+    let t = math.multiply(xtxixt, y);
     return t;
 }
 
@@ -89,6 +109,13 @@ function calc() {
     let X = get_X(data[0], data[3]);
     console.log(X);
     console.log('y');
+    {
+        let d = document.getElementById('X');
+        d.innerHTML = 'X:<br>';
+        for(let i = 0; i < X._data.length; i++) {
+            d.innerHTML += X._data[i]+ '<br>';
+        }
+    }
     let Y = get_Y(data[1]);
     console.log(Y);
     console.log('T');
@@ -114,10 +141,6 @@ function calc() {
     var C = document.getElementById("c").value.replace(/ /g, '').split(',');
     var A = [];
 
-    var testTetaTmpDeleteWhenDone = T;
-    var testXTmpDeleteWhenDone = X;
-    var testRSSTmpDeleteWhenDone = RSS;
-
     for (i = 0; i < tetaArray.length; i++){
         let tmp = [];
         for (j = 0; j < tetaArray.length; j++){
@@ -130,14 +153,41 @@ function calc() {
     }
     var q = A.length;
     var m = A[0].length;
-    var n = testXTmpDeleteWhenDone._data.length;
-    var Xt = math.transpose(testXTmpDeleteWhenDone);
+    var n = X._data.length;
+    let d = document.getElementById('temp');
+    d.innerHTML += '<br>q:'+q+'<br>';
+    d.innerHTML += '<br>m:'+m+'<br>';
+    d.innerHTML += 'n:'+n+'<br>';
+    var Xt = math.transpose(X);
     var At = math.transpose(A);
-    var thirdBracket = math.subtract(math.multiply(A,testTetaTmpDeleteWhenDone),C);
-    var secondBracket = math.inv(math.multiply(math.multiply(A, math.inv(math.multiply(Xt,testXTmpDeleteWhenDone))), At));
+    let at = math.multiply(A,T);
+    {
+        d.innerHTML += 'A*T:<br>'
+        for(let i = 0; i < at._data.length; i++) {
+            d.innerHTML += at._data[i]+'<br>';
+        }
+    }
+    var thirdBracket = math.subtract( at, C);
+    {
+        d.innerHTML += 'A*T - C:<br>';
+        for(let i = 0; i < thirdBracket._data.length; i++) {
+            d.innerHTML += thirdBracket._data[i]+'<br>';
+        }
+    }
+    let axtxi = math.multiply(A, math.inv(math.multiply(Xt,X)));
+    d.innerHTML += 'A*(Xt*X)^-1:<br>';
+    for(let i = 0; i < axtxi._data.length; i++) {
+        d.innerHTML += axtxi._data[i]+'<br>';
+    }
+    d.innerHTML += '(A*(Xt*X)^-1*At)^-1:<br>';
+    var secondBracket = math.inv(math.multiply(axtxi, At));
+    for(let i = 0; i < secondBracket._data.length; i++) {
+        d.innerHTML += secondBracket._data[i]+'<br>';
+    }
+
     var firstBracket = math.transpose(thirdBracket);
     var RSSh = math.multiply(math.multiply(firstBracket, secondBracket),thirdBracket);
-
-    var F = (RSSh/q)/(testRSSTmpDeleteWhenDone/(n-m));
+    d.innerHTML += 'RSSh = '+RSSh + '<br>';
+    var F = (RSSh/q)/(RSS/(n-m));
     document.getElementById("F").innerHTML = 'F = ' + F;
 }
