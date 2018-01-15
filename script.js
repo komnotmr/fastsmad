@@ -34,12 +34,29 @@ function get_X(x, m) {
     return math.matrix(X);
 }
 
-function make_table(x, y, y1) {
-    let d = document.getElementById('table');
-    for (let i = 0; i < x.length; i++) {
-        let tr = document.createElement('tr');
-
+function make_table(x, y, y1, t) {
+    {
+        let d = document.getElementById('table');
+        d.innerHTML = `<tr>
+        <th>X</th>
+        <th>Y</th>
+        <th>Y1</th>
+        </tr>`;
+        for (let i = 0; i < x._data.length; i++) {
+            let tr = document.createElement('tr');
+            tr.innerHTML = '<td>'+x._data[i]+'</td> <td>'+y._data[i]+'</td> <td>'+y1._data[i].toFixed(3)+' </td>'
+            d.appendChild(tr);
+        }
     }
+    {
+        let d = document.getElementById('tablet');
+        d.innerHTML = '';
+        for (let i = 0; i < t._data.length; i++) {
+            let tr = document.createElement('tr');
+            tr.innerHTML = '<th>'+'T'+(i+1)+'</th> <td>'+t._data[i].toFixed(3)+'</td>';
+            d.appendChild(tr);
+        }
+    }    
 }
 
 function get_Y(y) {
@@ -72,4 +89,6 @@ function calc() {
     console.log('YT');
     let YT = math.multiply(X, T);
     console.log(YT);
+    make_table(math.matrix(data[0]), Y, YT, T);
+    //let RSS = 
 }
