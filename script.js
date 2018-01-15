@@ -73,6 +73,14 @@ function mnk(x, y) {
     return t;
 }
 
+function rss(y, y1) {
+    let _rss = [];
+    for(let i = 0; i < y._data.length; i++) {
+        _rss.push((y._data[i]-y1._data[i])*(y._data[i]-y1._data[i]));
+    }
+    return math.matrix(_rss);
+}
+
 function calc() {
     console.log('calc');
     data = input();
@@ -90,5 +98,6 @@ function calc() {
     let YT = math.multiply(X, T);
     console.log(YT);
     make_table(math.matrix(data[0]), Y, YT, T);
-    //let RSS = 
+    let RSS = rss(Y, YT);
+    console.log(RSS);
 }
