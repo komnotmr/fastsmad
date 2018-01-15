@@ -74,11 +74,11 @@ function mnk(x, y) {
 }
 
 function rss(y, y1) {
-    let _rss = [];
+    let _rss = 0.0;
     for(let i = 0; i < y._data.length; i++) {
-        _rss.push((y._data[i]-y1._data[i])*(y._data[i]-y1._data[i]));
+        _rss += (y._data[i]-y1._data[i])*(y._data[i]-y1._data[i]);
     }
-    return math.matrix(_rss);
+    return _rss;
 }
 
 function calc() {
@@ -100,4 +100,14 @@ function calc() {
     make_table(math.matrix(data[0]), Y, YT, T);
     let RSS = rss(Y, YT);
     console.log(RSS);
+    {
+        let d = document.getElementById('RSSp');
+        d.innerHTML = 'RSS = ' + RSS.toFixed(3);
+    }
+    {
+        let d = document.getElementById('Cp');
+        Cp = RSS/data[2] +2*T._data.length - Y._data.length;
+        d.innerHTML = 'Cp = ' + Cp.toFixed(3);
+    }
+
 }
