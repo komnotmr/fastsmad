@@ -109,5 +109,35 @@ function calc() {
         Cp = RSS/data[2] +2*T._data.length - Y._data.length;
         d.innerHTML = 'Cp = ' + Cp.toFixed(3);
     }
+//---------
+    var tetaArray = document.getElementById("a").value.replace(/ /g, '').split(',');
+    var C = document.getElementById("c").value.replace(/ /g, '').split(',');
+    var A = [];
 
+    var testTetaTmpDeleteWhenDone = T;
+    var testXTmpDeleteWhenDone = X;
+    var testRSSTmpDeleteWhenDone = RSS;
+
+    for (i = 0; i < tetaArray.length; i++){
+        let tmp = [];
+        for (j = 0; j < tetaArray.length; j++){
+            tmp.push(0);
+        }
+        if (tetaArray[i] == 1)
+            tmp[i] = 1;
+        if (math.sum(tmp) > 0)
+            A.push(tmp);
+    }
+    var q = A.length;
+    var m = A[0].length;
+    var n = testXTmpDeleteWhenDone._data.length;
+    var Xt = math.transpose(testXTmpDeleteWhenDone);
+    var At = math.transpose(A);
+    var thirdBracket = math.subtract(math.multiply(A,testTetaTmpDeleteWhenDone),C);
+    var secondBracket = math.inv(math.multiply(math.multiply(A, math.inv(math.multiply(Xt,testXTmpDeleteWhenDone))), At));
+    var firstBracket = math.transpose(thirdBracket);
+    var RSSh = math.multiply(math.multiply(firstBracket, secondBracket),thirdBracket);
+
+    var F = (RSSh/q)/(testRSSTmpDeleteWhenDone/(n-m));
+    document.getElementById("F").innerHTML = 'F = ' + F;
 }
